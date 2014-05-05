@@ -14,17 +14,6 @@
 
     <script src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
 
-    <h3>Video Watcher</h3>
-
-    <p>
-      <input type="text" id="videoUrlInput" />
-      <input class="button" type="button" value="Play!" id="playButton"
-	         style="visibility:hidden;"
-	         onClick="embedVideo()"/>
-      </p>
-
-    <iframe id="videoIframe" />
-
     <script>
       function embedVideo() {
         var embedUrl = document.getElementById("videoUrlInput").value;
@@ -45,6 +34,19 @@
       // Wait for gadget to load.
       gadgets.util.registerOnLoadHandler(init);
       </script>
+
+
+    <h3>Video Watcher</h3>
+
+    <p>
+      <input type="text" id="videoUrlInput" />
+      <input class="button" type="button" value="Play!" id="playButton"
+	         style="visibility:hidden;"
+	         onClick="embedVideo()"/>
+      </p>
+
+    <iframe id="videoIframe" />
+
     </body>
   ]]>
     </Content>
