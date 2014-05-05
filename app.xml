@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  ﻿  <ModulePrefs title="Video Watcher">
+    ﻿  ﻿  <Require feature="rpc" />
+    ﻿  ﻿  <Require feature="views" />
+    ﻿  ﻿  <Require feature="locked-domain" />
+    ﻿  </ModulePrefs>
+  ﻿  <Content type="html"><![CDATA[
+
+<html>
+  <style type="text/css">
+  </style>
+  <body>
+
+    <script src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
+
+    <h3>Video Watcher</h3>
+
+    <p>
+      <input type="text" id="videoUrlInput" />
+      <input class="button" type="button" value="Play!" id="playButton"
+	         style="visibility:hidden;"
+	         onClick="embedVideo()"/>
+      </p>
+
+    <iframe id="videoIframe" />
+
+    <script>
+      function embedVideo() {
+        var embedUrl = document.getElementById("videoUrlInput").value;
+        document.getElementById("videoIframe").setAttribute("src", embedUrl);
+      }
+
+      function init() {
+        // When API is ready...
+        gapi.hangout.onApiReady.add(
+            function(eventObj) {
+              if (eventObj.isApiReady) {
+                document.getElementById('playButton')
+                  .style.visibility = 'visible';
+              }
+            });
+      }
+
+      // Wait for gadget to load.
+      gadgets.util.registerOnLoadHandler(init);
+      </script>
+    </body>
+  ]]>
+    </Content>
+  </Module>
+
