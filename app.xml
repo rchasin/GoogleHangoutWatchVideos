@@ -15,14 +15,35 @@
     <script src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
 
     <script>
-      function embedVideo() {
+// USE https://developers.google.com/+/hangouts/shared-state TO GET STATE TO OTHER APP USERS
+// can use the events to trigger their play button with the appropriate values
+// ... but we also need to get the video PLAYING in everyone's app at the same time...
+// like, need to trigger a click in the iframe's body or something
+
+      function embedVideo(event) {
+        /* Function called when state is updated */
+        var state = gapi.hangout.data.getState();
+        var embedUrl = state["video_url"]
+        var embedWidth = state["video_width"]
+        var embedHeight = state["video_height"]
+        var ifr = document.getElementById("videoIframe");
+        if (ifr.getAttribute("src") != embedUrl) {
+          ifr.setAttribute("src", embedUrl);
+        }
+        ifr.setAttribute("width", embedWidth);
+        ifr.setAttribute("height", embedHeight);
+      }
+
+      function sendUpdatedVideoState() {
+        /* Function called to update state when someone enters a new URL/width/height */
         var embedUrl = document.getElementById("videoUrlInput").value;
         var embedHeight = document.getElementById("videoHeightInput").value;
         var embedWidth = document.getElementById("videoWidthInput").value;
-        var ifr = document.getElementById("videoIframe");
-        ifr.setAttribute("src", embedUrl);
-        ifr.setAttribute("width", embedWidth);
-        ifr.setAttribute("height", embedHeight);
+        gapi.hangout.data.submitDelta( {
+          "video_url": embedUrl,
+          "video_width": embedWidth,
+          "video_height": embedHeight
+        } );
       }
 
       function init() {
@@ -38,6 +59,7 @@
 
       // Wait for gadget to load.
       gadgets.util.registerOnLoadHandler(init);
+      gapi.hangout.data.onStateChanged(embedVideo);
       </script>
 
 
@@ -49,7 +71,7 @@
       Height: <input type="text" id="videoHeightInput" />
       <input class="button" type="button" value="Play!" id="playButton"
 	         style="visibility:hidden;"
-	         onClick="embedVideo()"/>
+	         onClick="sendUpdatedVideoState()"/>
       </p>
 
     <iframe id="videoIframe" />
