@@ -12,6 +12,7 @@
   </style>
   <body>
 
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
 
     <script>
@@ -20,16 +21,50 @@
 // ... but we also need to get the video PLAYING in everyone's app at the same time...
 // like, need to trigger a click in the iframe's body or something
 
-      function sendUpdatedVideoState() {
+      function sendUpdatedVideoParams() {
         /* Function called to update state when someone enters a new URL/width/height */
         var embedUrl = document.getElementById("videoUrlInput").value;
         var embedHeight = document.getElementById("videoHeightInput").value;
         var embedWidth = document.getElementById("videoWidthInput").value;
-        gapi.hangout.data.submitDelta( {
+        console.log("Triggering a state change due to a video params. Setting state:");
+        console.log(state);
+        newState = {
           "video_url": embedUrl,
           "video_width": embedWidth,
-          "video_height": embedHeight
-        } );
+          "video_height": embedHeight,
+          "old_playing": false,
+          "playing": false,
+        }
+        gapi.hangout.data.submitDelta(newState);
+      }
+
+      function togglePlayingState() {
+        var state = gapi.hangout.data.getState();
+        playing = state["playing"];
+        newPlaying = !playing;
+        newState = {"old_playing": playing, "playing": newPlaying};
+        gapi.handout.data.submitDelta(newState);
+      }
+
+      function embedVideo(event) {
+        /* Function called when state is updated */
+        var state = gapi.hangout.data.getState();
+        console.log("Received a state change event, updating based on state:");
+        console.log(state);
+        var embedUrl = state["video_url"];
+        var embedWidth = state["video_width"];
+        var embedHeight = state["video_height"];
+        var playing = state["playing"];
+        var oldPlaying = state["old_playing"];
+        var ifr = document.getElementById("videoIframe");
+        if (ifr.getAttribute("src") != embedUrl) {
+          ifr.setAttribute("src", embedUrl);
+        }
+        ifr.setAttribute("width", embedWidth);
+        ifr.setAttribute("height", embedHeight);
+        if ((playing && !oldPlaying) || (!playing && oldPlaying)) {
+          $(ifr).click();
+        }
       }
 
       function init() {
@@ -41,23 +76,11 @@
                   .style.visibility = 'visible';
               }
             });
+        gapi.hangout.data.onStateChanged.add(embedVideo);
       }
 
       // Wait for gadget to load.
       gadgets.util.registerOnLoadHandler(init);
-      gapi.hangout.data.onStateChanged.add(function (event) {
-        /* Function called when state is updated */
-        var state = gapi.hangout.data.getState();
-        var embedUrl = state["video_url"];
-        var embedWidth = state["video_width"];
-        var embedHeight = state["video_height"];
-        var ifr = document.getElementById("videoIframe");
-        if (ifr.getAttribute("src") != embedUrl) {
-          ifr.setAttribute("src", embedUrl);
-        }
-        ifr.setAttribute("width", embedWidth);
-        ifr.setAttribute("height", embedHeight);
-      });
       </script>
 
 
@@ -69,10 +92,10 @@
       Height: <input type="text" id="videoHeightInput" />
       <input class="button" type="button" value="Play!" id="playButton"
 	         style="visibility:hidden;"
-	         onClick="sendUpdatedVideoState()"/>
+	         onClick="sendUpdatedVideoParams()"/>
       </p>
 
-    <iframe id="videoIframe" />
+    <iframe id="videoIframe" onClick="togglePlayingState" />
 
     </body>
   ]]>
