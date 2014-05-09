@@ -26,8 +26,6 @@
         var embedUrl = document.getElementById("videoUrlInput").value;
         var embedHeight = document.getElementById("videoHeightInput").value;
         var embedWidth = document.getElementById("videoWidthInput").value;
-        console.log("Triggering a state change due to a video params. Setting state:");
-        console.log(state);
         newState = {
           "video_url": embedUrl,
           "video_width": embedWidth,
@@ -35,6 +33,8 @@
           "old_playing": false,
           "playing": false,
         }
+        console.log("Triggering a state change due to a video params. Setting state:");
+        console.log(newState);
         gapi.hangout.data.submitDelta(newState);
       }
 
