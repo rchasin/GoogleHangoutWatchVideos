@@ -26,29 +26,31 @@
         var embedUrl = document.getElementById("videoUrlInput").value;
         var embedHeight = document.getElementById("videoHeightInput").value;
         var embedWidth = document.getElementById("videoWidthInput").value;
-        newState = {
+        newState = JSON.stringify({
           "video_url": embedUrl,
           "video_width": embedWidth,
           "video_height": embedHeight,
           "old_playing": false,
           "playing": false,
-        }
-        console.log("Triggering a state change due to a video params. Setting state:");
+        });
+        console.log("Triggering a state change due to video params. Setting state:");
         console.log(newState);
         gapi.hangout.data.submitDelta(newState);
       }
 
       function togglePlayingState() {
-        var state = gapi.hangout.data.getState();
+        var state = JSON.parse(gapi.hangout.data.getState());
         playing = state["playing"];
         newPlaying = !playing;
-        newState = {"old_playing": playing, "playing": newPlaying};
+        newState = JSON.stringify({"old_playing": playing, "playing": newPlaying});
+        console.log("Triggering a state change due to play/pause. Setting state:");
+        console.log(newState);
         gapi.handout.data.submitDelta(newState);
       }
 
       function embedVideo(event) {
         /* Function called when state is updated */
-        var state = gapi.hangout.data.getState();
+        var state = JSON.parse(gapi.hangout.data.getState());
         console.log("Received a state change event, updating based on state:");
         console.log(state);
         var embedUrl = state["video_url"];
