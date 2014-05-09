@@ -26,23 +26,26 @@
         var embedUrl = document.getElementById("videoUrlInput").value;
         var embedHeight = document.getElementById("videoHeightInput").value;
         var embedWidth = document.getElementById("videoWidthInput").value;
-        newState = JSON.stringify({
+        newState = {
           "video_url": embedUrl,
           "video_width": embedWidth,
           "video_height": embedHeight,
-          "old_playing": false,
-          "playing": false,
-        });
+          "old_playing": "false",
+          "playing": "false",
+        };
         console.log("Triggering a state change due to video params. Setting state:");
         console.log(newState);
         gapi.hangout.data.submitDelta(newState);
       }
 
       function togglePlayingState() {
-        var state = JSON.parse(gapi.hangout.data.getState());
-        playing = state["playing"];
+        var state = gapi.hangout.data.getState();
+        playing = JSON.parse(state["playing"]);
         newPlaying = !playing;
-        newState = JSON.stringify({"old_playing": playing, "playing": newPlaying});
+        newState = {
+          "old_playing": JSON.stringify(playing),
+          "playing": JSON.stringify(newPlaying)
+        };
         console.log("Triggering a state change due to play/pause. Setting state:");
         console.log(newState);
         gapi.handout.data.submitDelta(newState);
@@ -50,14 +53,14 @@
 
       function embedVideo(event) {
         /* Function called when state is updated */
-        var state = JSON.parse(gapi.hangout.data.getState());
+        var state = gapi.hangout.data.getState();
         console.log("Received a state change event, updating based on state:");
         console.log(state);
         var embedUrl = state["video_url"];
         var embedWidth = state["video_width"];
         var embedHeight = state["video_height"];
-        var playing = state["playing"];
-        var oldPlaying = state["old_playing"];
+        var playing = JSON.parse(state["playing"]);
+        var oldPlaying = JSON.parse(state["old_playing"]);
         var ifr = document.getElementById("videoIframe");
         if (ifr.getAttribute("src") != embedUrl) {
           ifr.setAttribute("src", embedUrl);
