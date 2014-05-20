@@ -19,16 +19,17 @@
 
     <h3>Video Watcher</h3>
 
-    <p>
+    <div>
       URL: <input type="text" id="videoUrlInput" />
       Width: <input type="text" id="videoWidthInput" />
       Height: <input type="text" id="videoHeightInput" />
-      <input class="button" type="button" value="Play!" id="playButton"
-	         style="visibility:hidden;"
-	         onClick="sendUpdatedVideoParams()"/>
-      </p>
+      <input class="button" type="button" value="Play!" id="playButton" style="visibility:hidden;" onClick="sendUpdatedVideoParams()"/>
+    </div>
 
-    <iframe id="videoIframe" onClick="togglePlayingState" />
+    <div>
+      <video id="videoPlayer" onClick="togglePlayingState()">
+      </video>
+    </div>
 
     </body>
   ]]>

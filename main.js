@@ -1,3 +1,5 @@
+
+
 function sendUpdatedVideoParams() {
   /* Function called to update state when someone enters a new URL/width/height */
   var embedUrl = document.getElementById("videoUrlInput").value;
@@ -28,8 +30,10 @@ function togglePlayingState() {
   gapi.hangout.data.submitDelta(newState);
 }
 
-function embedVideo(event) {
+function stateChanged(event) {
   /* Function called when state is updated */
+
+  // Handle a video url or dimension change
   var state = gapi.hangout.data.getState();
   console.log("Received a state change event, updating based on state:");
   console.log(state);
@@ -38,14 +42,22 @@ function embedVideo(event) {
   var embedHeight = state["video_height"];
   var playing = JSON.parse(state["playing"]);
   var oldPlaying = JSON.parse(state["old_playing"]);
-  var ifr = document.getElementById("videoIframe");
-  if (ifr.getAttribute("src") != embedUrl) {
-    ifr.setAttribute("src", embedUrl);
+
+  var videoPlayer = $("#videoPlayer");
+  var currentVideoSource = videoPlayer.src;
+  // If the URL has changed, use a new one in the <video> tag
+  if(!currentVideoSource || (currentVideoSource != embedUrl)) {
+    videoPlayer.setAttribute("src", embedUrl);
   }
-  ifr.setAttribute("width", embedWidth);
-  ifr.setAttribute("height", embedHeight);
-  if ((playing && !oldPlaying) || (!playing && oldPlaying)) {
-    $(ifr).click();
+  // Always set the width/height to the desired values
+  videoPlayer.setAttribute("width", embedWidth);
+  videoPlayer.setAttribute("height", embedHeight);
+
+  // Handle a play/pause change
+  if (playing && !oldPlaying) {
+    videoPlayer.play();
+  } else if (!playing && oldPlaying) {
+    videoPlayer.pause();    
   }
 }
 
@@ -62,4 +74,4 @@ function init() {
 
 // Wait for gadget to load.
 gadgets.util.registerOnLoadHandler(init);
-gapi.hangout.data.onStateChanged.add(embedVideo);
+gapi.hangout.data.onStateChanged.add(stateChanged);
