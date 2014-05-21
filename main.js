@@ -1,14 +1,28 @@
 function sendUpdatedVideoParams() {
   /* Function called to update state when someone enters a new URL/width/height */
+  var state = gapi.hangout.data.getState();
+  console.log("Attempt to use new video params. Current state:");
+  console.log(state);
+  // get out current playing/oldPlaying values to reuse if we aren't changing the url
+  var playing = JSON.parse(state["playing"] || "false");
+  var oldPlaying = JSON.parse(state["old_playing"] || "false");
+  // get out current video url to determine whether we are changing the url
+  var currentEmbedUrl = state["video_url"];
+  // extract the new params we want from the fields
   var embedUrl = document.getElementById("videoUrlInput").value;
   var embedHeight = document.getElementById("videoHeightInput").value;
-  var embedWidth = document.getElementById("videoWidthInput").value;
+  var embedWidth = document.getElementById("videoWidthInput").value;  
+  // if the video url has changed, reset playing and oldPlaying to false
+  if (currentEmbedUrl != embedUrl) {
+    playing = false;
+    oldPlaying = false;
+  }
   newState = {
     "video_url": embedUrl,
     "video_width": embedWidth,
     "video_height": embedHeight,
-    "old_playing": "false",
-    "playing": "false",
+    "old_playing": playing,  // these should not be false, should be current vals
+    "playing": oldPlaying,
   };
   console.log("Triggering a state change due to video params. Setting state:");
   console.log(newState);
