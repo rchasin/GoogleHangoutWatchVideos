@@ -1,6 +1,3 @@
-DEFAULT_WIDTH = 500
-DEFAULT_HEIGHT = 400
-
 function sendUpdatedVideoParams() {
   /* Function called to update state when someone enters a new URL/width/height */
   var embedUrl = document.getElementById("videoUrlInput").value;
@@ -20,15 +17,19 @@ function sendUpdatedVideoParams() {
 
 function togglePlayingState() {
   var state = gapi.hangout.data.getState();
-  playing = JSON.parse(state["playing"]);
-  newPlaying = !playing;
-  newState = {
-    "old_playing": JSON.stringify(playing),
-    "playing": JSON.stringify(newPlaying)
-  };
-  console.log("Triggering a state change due to play/pause. Setting state:");
-  console.log(newState);
-  gapi.hangout.data.submitDelta(newState);
+  console.log("Attempt to toggle playing state. Current state:");
+  console.log(state);
+  if(state["video_url"]) {
+    playing = JSON.parse(state["playing"]);
+    newPlaying = !playing;
+    newState = {
+      "old_playing": JSON.stringify(playing),
+      "playing": JSON.stringify(newPlaying)
+    };
+    console.log("Triggering a state change due to play/pause. Setting state:");
+    console.log(newState);
+    gapi.hangout.data.submitDelta(newState);
+  }
 }
 
 function stateChanged(event) {
@@ -38,27 +39,32 @@ function stateChanged(event) {
   var state = gapi.hangout.data.getState();
   console.log("Received a state change event, updating based on state:");
   console.log(state);
-  var embedUrl = state["video_url"] || "";
-  var embedWidth = state["video_width"] || DEFAULT_WIDTH;
-  var embedHeight = state["video_height"] || DEFAULT_HEIGHT;
+  var embedUrl = state["video_url"];
+  var embedWidth = state["video_width"];
+  var embedHeight = state["video_height"];
   var playing = JSON.parse(state["playing"] || "false");
   var oldPlaying = JSON.parse(state["old_playing"] || "false");
 
   var videoPlayer = $("#videoPlayer");
   var currentVideoSource = videoPlayer.attr("src");
-  // If the URL has changed, use a new one in the <video> tag
-  if(!currentVideoSource || (currentVideoSource != embedUrl)) {
+  // If the URL has changed (and there is one), use the new one in the <video> tag
+  if (embedUrl && (!currentVideoSource || (currentVideoSource != embedUrl))) {
     videoPlayer.attr("src", embedUrl);
   }
-  // Always set the width/height to the desired values
-  videoPlayer.attr("width", embedWidth);
-  videoPlayer.attr("height", embedHeight);
+  // Always set the width/height to the desired values if given
+  if (embedWidth) {
+    videoPlayer.attr("width", embedWidth);
+  }
+  if (embedHeight) {
+    videoPlayer.attr("height", embedHeight);
+  }
 
   // Handle a play/pause change
+  // videoPlayer is a jQuery object so get the underlying DOM object with .get(0)
   if (playing && !oldPlaying) {
-    videoPlayer.play();
+    videoPlayer.get(0).play();
   } else if (!playing && oldPlaying) {
-    videoPlayer.pause();    
+    videoPlayer.get(0).pause();    
   }
 }
 
