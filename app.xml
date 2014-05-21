@@ -27,7 +27,9 @@
     </div>
 
     <div>
-      <video id="videoPlayer" onClick="togglePlayingState()">
+      <video id="videoPlayer"
+        onClick="togglePlayingState()"
+        width="500" height="400">
       </video>
     </div>
 

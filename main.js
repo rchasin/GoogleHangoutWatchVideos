@@ -1,4 +1,5 @@
-
+DEFAULT_WIDTH = 500
+DEFAULT_HEIGHT = 400
 
 function sendUpdatedVideoParams() {
   /* Function called to update state when someone enters a new URL/width/height */
@@ -37,11 +38,11 @@ function stateChanged(event) {
   var state = gapi.hangout.data.getState();
   console.log("Received a state change event, updating based on state:");
   console.log(state);
-  var embedUrl = state["video_url"];
-  var embedWidth = state["video_width"];
-  var embedHeight = state["video_height"];
-  var playing = JSON.parse(state["playing"]);
-  var oldPlaying = JSON.parse(state["old_playing"]);
+  var embedUrl = state["video_url"] || "";
+  var embedWidth = state["video_width"] || DEFAULT_WIDTH;
+  var embedHeight = state["video_height"] || DEFAULT_HEIGHT;
+  var playing = JSON.parse(state["playing"] || "false");
+  var oldPlaying = JSON.parse(state["old_playing"] || "false");
 
   var videoPlayer = $("#videoPlayer");
   var currentVideoSource = videoPlayer.src;
