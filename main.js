@@ -14,15 +14,15 @@ function sendUpdatedVideoParams() {
   var embedWidth = document.getElementById("videoWidthInput").value;  
   // if the video url has changed, reset playing and oldPlaying to false
   if (currentEmbedUrl != embedUrl) {
-    playing = "false";
-    oldPlaying = "false";
+    playing = false;
+    oldPlaying = false;
   }
   newState = {
     "video_url": embedUrl,
     "video_width": embedWidth,
     "video_height": embedHeight,
-    "old_playing": playing,  // these should not be false, should be current vals
-    "playing": oldPlaying,
+    "old_playing": JSON.stringify(playing),  // these should not be false, should be current vals
+    "playing": JSON.stringify(oldPlaying),
   };
   console.log("Triggering a state change due to video params. Setting state:");
   console.log(newState);
