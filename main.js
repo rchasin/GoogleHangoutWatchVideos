@@ -14,8 +14,8 @@ function sendUpdatedVideoParams() {
   var embedWidth = document.getElementById("videoWidthInput").value;  
   // if the video url has changed, reset playing and oldPlaying to false
   if (currentEmbedUrl != embedUrl) {
-    playing = false;
-    oldPlaying = false;
+    playing = "false";
+    oldPlaying = "false";
   }
   newState = {
     "video_url": embedUrl,
