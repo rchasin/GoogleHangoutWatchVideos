@@ -45,14 +45,14 @@ function stateChanged(event) {
   var oldPlaying = JSON.parse(state["old_playing"] || "false");
 
   var videoPlayer = $("#videoPlayer");
-  var currentVideoSource = videoPlayer.src;
+  var currentVideoSource = videoPlayer.attr("src");
   // If the URL has changed, use a new one in the <video> tag
   if(!currentVideoSource || (currentVideoSource != embedUrl)) {
-    videoPlayer.setAttribute("src", embedUrl);
+    videoPlayer.attr("src", embedUrl);
   }
   // Always set the width/height to the desired values
-  videoPlayer.setAttribute("width", embedWidth);
-  videoPlayer.setAttribute("height", embedHeight);
+  videoPlayer.attr("width", embedWidth);
+  videoPlayer.attr("height", embedHeight);
 
   // Handle a play/pause change
   if (playing && !oldPlaying) {
