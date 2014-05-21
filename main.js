@@ -21,8 +21,8 @@ function sendUpdatedVideoParams() {
     "video_url": embedUrl,
     "video_width": embedWidth,
     "video_height": embedHeight,
-    "old_playing": playing,  // these should not be false, should be current vals
-    "playing": oldPlaying,
+    "old_playing": oldPlaying,  // these should not be false, should be current vals
+    "playing": playing,
   };
   console.log("Triggering a state change due to video params. Setting state:");
   console.log(newState);
